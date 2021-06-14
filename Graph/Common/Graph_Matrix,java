@@ -1,1 +1,236 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
+
+public class Graph_Matrix {
+	private int adjMatrix[][];
+	private int vertexCount;
+	private Vertex vertexList[];
+	public Graph_Matrix(int vertexCount) {
+		super();
+		this.vertexCount = vertexCount;
+		adjMatrix = new int[vertexCount][vertexCount];
+		for(int y=0;y<vertexCount;y++)
+			for (int x=0;x<vertexCount;x++)
+				adjMatrix[x][y]=0;
+	}
+	
+	public void addEdge(int i,int j) {
+		if(i>=0 && i<vertexCount && j>=0 && j<vertexCount) {
+			adjMatrix[i][j]=1;
+			adjMatrix[j][i]=1;
+		}
+	}
+	
+	public void removeEdge(int i,int j) {
+		if(i>=0 && i<vertexCount && j>=0 && j<vertexCount) {
+			adjMatrix[i][j]=0;
+			adjMatrix[j][i]=0;
+		}
+	}
+	
+	public boolean isEdge(int i,int j) {
+		if(i>=0 && i<vertexCount && j>=0 && j<vertexCount)
+			return adjMatrix[i][j]==1;
+		else return false;
+	}
+	
+	public void dfs() {
+		vertexList[0].visited=true;
+		System.out.println(vertexList[0].label);
+		Stack<Integer> st = new Stack();
+		st.push(0);
+		while(!st.isEmpty()) {
+			int v =  getUnVisitedChildVertex(st.peek());
+			if(v==-1)
+				st.pop();
+			else {
+				vertexList[v].visited=true;
+				System.out.println(vertexList[v].label);
+				st.push(v);
+			}
+		}
+		for(int j=0;j<vertexCount;j++) 
+			vertexList[j].visited=false;
+	}
+	
+	public void bfs() {
+		vertexList[0].visited=true;
+		System.out.println(vertexList[0].label);
+		Queue<Integer> q = new LinkedList<Integer>();
+		q.offer(0);
+		int v2;
+		while(!q.isEmpty()) {
+			int v1=q.poll();
+			while((v2=getUnVisitedChildVertex(v1))!=-1) {
+				vertexList[v2].visited=true;
+				System.out.println(vertexList[v2].label);
+				q.offer(v2);
+			}
+		}
+		for(int j=0;j<vertexCount;j++) 
+			vertexList[j].visited=false;
+	}
+	
+	
+	public int getUnVisitedChildVertex(int v) {
+		for(int j=0;j<vertexCount;j++) {
+			if(adjMatrix[v][j]==1 && vertexList[j].visited==false)
+				return j;
+		}
+		return -1;
+	}
+	
+	public boolean hasSimplePath(int s,int d) {
+		vertexList[s].visited=true;
+		if(s==d)
+			return true;
+		for(int t=0;t<vertexCount;t++) {
+			if(adjMatrix[s][t]==1 && !vertexList[t].visited)
+				hasSimplePath(t, d);
+		}
+		
+		return false;
+	}
+	int simplePathCount=0;
+	
+	public void countSimplePath(int s,int d) {
+		vertexList[s].visited=true;
+		if(s==d) {
+			simplePathCount++;
+			vertexList[d].visited=false;
+		}
+		for(int t=0;t<vertexCount;t++) {
+			if(adjMatrix[s][t]==1 && !vertexList[t].visited) {
+				countSimplePath(s, d);
+				vertexList[t].visited=false;
+			}
+			
+		}
+	}
+	
+	/**
+	 * Date 08/22/2015
+	 * @author Tushar Roy
+	 *
+	 * Find articulation points in connected undirected graph.
+	 * Articulation points are vertices such that removing any one of them disconnects the graph.
+	 *
+	 * We need to do DFS of this graph and keep visitedTime and lowTime for each vertex.
+	 * lowTime is keeps track of back edges.
+	 *
+	 * If any one of following condition meets then vertex is articulation point.
+	 *
+	 * 1) If vertex is root of DFS and has atlesat 2 independent children.(By independent it means they are
+	 * not connected to each other except via this vertex). This condition is needed because if we
+	 * started from corner vertex it will meet condition 2 but still is not an articulation point. To filter
+	 * out those vertices we need this condition.
+	 *
+	 * 2) It is not root of DFS and if visitedTime of vertex <= lowTime of any adjacent vertex then its articulation point.
+	 *
+	 * Time complexity is O(E + V)
+	 * Space complexity is O(V)
+	 *
+	 * References:
+	 * https://en.wikipedia.org/wiki/Biconnected_component
+	 * http://www.geeksforgeeks.org/articulation-points-or-cut-vertices-in-a-graph/
+	 */
+	public class ArticulationPoint<T> {
+
+	    private int time;
+
+	    public Set<Vertex<T>> findarticulationPoints(Graph<T> graph) {
+	        time = 0;
+	        Set<Vertex<T>> visited = new HashSet<>();
+	        Set<Vertex<T>> articulationPoints = new HashSet<>();
+	        Vertex<T> startVertex = graph.getAllVertex().iterator().next();
+
+	        Map<Vertex<T>, Integer> visitedTime = new HashMap<>();
+	        Map<Vertex<T>, Integer> lowTime = new HashMap<>();
+	        Map<Vertex<T>, Vertex<T>> parent = new HashMap<>();
+
+	        DFS(visited,articulationPoints,startVertex, visitedTime, lowTime, parent);
+	        return articulationPoints;
+	    }
+
+	    private void DFS(Set<Vertex<T>> visited,
+	            Set<Vertex<T>> articulationPoints, Vertex<T> vertex,
+	            Map<Vertex<T>, Integer> visitedTime,
+	            Map<Vertex<T>, Integer> lowTime, Map<Vertex<T>, Vertex<T>> parent) {
+	        visited.add(vertex);
+	        visitedTime.put(vertex, time);
+	        lowTime.put(vertex, time);
+	        time++;
+	        int childCount =0;
+	        boolean isArticulationPoint = false;
+	        for(Vertex<T> adj : vertex.getAdjacentVertexes()){
+	            //if adj is same as parent then just ignore this vertex.
+	            if(adj.equals(parent.get(vertex))) {
+	                continue;
+	            }
+	            //if adj has not been visited then visit it.
+	            if(!visited.contains(adj)) {
+	                parent.put(adj, vertex);
+	                childCount++;
+	                DFS(visited, articulationPoints, adj, visitedTime, lowTime, parent);
+
+	                if(visitedTime.get(vertex) <= lowTime.get(adj)) {
+	                    isArticulationPoint = true;
+	                } else {
+	                    //below operation basically does lowTime[vertex] = min(lowTime[vertex], lowTime[adj]);
+	                    lowTime.compute(vertex, (currentVertex, time) ->
+	                        Math.min(time, lowTime.get(adj))
+	                    );
+	                }
+
+	            } else { //if adj is already visited see if you can get better low time.
+	                //below operation basically does lowTime[vertex] = min(lowTime[vertex], visitedTime[adj]);
+	                lowTime.compute(vertex, (currentVertex, time) ->
+	                                Math.min(time, visitedTime.get(adj))
+	                );
+	            }
+	        }
+
+	        //checks if either condition 1 or condition 2 meets). If yes then it is articulation point.
+	        if((parent.get(vertex) == null && childCount >= 2) || parent.get(vertex) != null && isArticulationPoint ) {
+	            articulationPoints.add(vertex);
+	        }
+	        
+	    }
+	    public static void main(String args[]){
+	        Graph<Integer> graph = new Graph<>(false);
+	        graph.addEdge(1, 2);
+	        graph.addEdge(2, 3);
+	        graph.addEdge(1, 3);
+	        graph.addEdge(1, 4);
+	        graph.addEdge(4, 5);
+	        graph.addEdge(5, 6);
+	        graph.addEdge(6, 7);
+	        graph.addEdge(7, 5);
+	        graph.addEdge(6, 8);
+
+	        //bigger example
+	        /*
+	        graph.addEdge(0, 1);
+	        graph.addEdge(0, 2);
+	        graph.addEdge(0, 3);
+	        graph.addEdge(0, 4);
+	        graph.addEdge(4, 2);
+	        graph.addEdge(3, 5);
+	        graph.addEdge(4, 6);
+	        graph.addEdge(6, 3);
+	        graph.addEdge(6, 7);
+	        graph.addEdge(6, 8);
+	        graph.addEdge(7, 9);
+	        graph.addEdge(9, 10);
+	        graph.addEdge(8, 10);*/
+
+	        ArticulationPoint<Integer> ap = new ArticulationPoint<Integer>();
+	        Set<Vertex<Integer>> aPoints = ap.findarticulationPoints(graph);
+	        aPoints.forEach(point -> System.out.println(point));
+	    }
+	    
+	}
+}
 
