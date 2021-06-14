@@ -2,11 +2,13 @@ package Leet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.stream.IntStream;
@@ -232,6 +234,43 @@ public class Problems {
 			    }
 	    }
 	 
+//	 Given an integer n, return the number of strings of length n that consist only of vowels (a, e, i, o, u) and are lexicographically sorted.
+//
+//			 A string s is lexicographically sorted if for all valid i, s[i] is the same as or comes before s[i+1] in the alphabet.
+//
+//			  
+//
+//			 Example 1:
+//
+//			 Input: n = 1
+//			 Output: 5
+//			 Explanation: The 5 sorted strings that consist of vowels only are ["a","e","i","o","u"].
+//			 Example 2:
+//
+//			 Input: n = 2
+//			 Output: 15
+//			 Explanation: The 15 sorted strings that consist of vowels only are
+//			 ["aa","ae","ai","ao","au","ee","ei","eo","eu","ii","io","iu","oo","ou","uu"].
+//			 Note that "ea" is not a valid string since 'e' comes after 'a' in the alphabet.
+//			 Example 3:
+//
+//			 Input: n = 33
+//			 Output: 66045
+	 //https://www.youtube.com/watch?v=gdt7HQF56OI
+	 
+	 public int countVowelString(int n) {
+	     int[]dp= {1,1,1,1,1};
+	     for(int i=2;i<=n;i++) {
+	    	 for(int j=3;j>=0;j--) {
+	    		 dp[j]=dp[j]+dp[j+1];
+	    	 }
+	     }
+	     int ans=0;
+	     for(int i:dp)
+	    	 ans+=i;
+	     return ans;
+	    }
+	 
 //	 You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
 //
 //	 Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you can rob tonight without alerting the police.
@@ -289,8 +328,6 @@ public class Problems {
 	        int[][]t=new int[m+1][n+1];
 	        for(int i=0;i<=m;i++) {
 	        	for(int j=0;j<=n;j++) {
-	        		if(j==0)
-	        			t[i][j]=0;
 	        		if(j==0)
 	        			t[i][j]=1;
 	        	}
@@ -540,7 +577,7 @@ public class Problems {
 	      }
 	      
 	      int ans=0;
-	      for(int i=0;i<m;i++) {
+	      for(int i=0;i<m;i++) {//fixing the starting point
 	    	  for(int j=0;j<n;j++) {
 	    		  int min_width=Integer.MAX_VALUE;
 	    		  for(int k=i;k<m;k++) {//this is to count the submatrix row wise
@@ -611,7 +648,8 @@ public class Problems {
 	      return ans;
 	 }
 	 
-//	 Given an integer array arr, you should partition the array into (contiguous) subarrays of length at most k. After partitioning, each subarray has their values changed to become the maximum value of that subarray.
+//	 Given an integer array arr, you should partition the array into (contiguous) subarrays of length at most k. After partitioning, each subarray 
+	 //has their values changed to become the maximum value of that subarray.
 //
 //	 Return the largest sum of the given array after partitioning.
 //
@@ -630,8 +668,7 @@ public class Problems {
 //
 //	 Input: arr = [1], k = 1
 //	 Output: 1
-	 //https://www.youtube.com/watch?v=RNGA4gHvC7E
-	 
+//	 https://www.youtube.com/watch?v=RNGA4gHvC7E	 
 	 public int maxSumAfterPartitioning(int[] arr, int k) {
 	     int n=arr.length;
 	     int []t=new int[n];
@@ -1681,7 +1718,8 @@ public class Problems {
 	      dp[0]=1;
 	      if(s.charAt(0)!=0)
 	    	  dp[1]=1;
-	      for(int i=2;i<=s.length();i++) {//starting from i=2 because we have already covered dp 0 and 1
+	      for(int i=2;i<=s.length();i++) {//starting from i=2 because we have already covered dp 0 and 1.here i will represent the ending index and we are cutting in backward direction.
+	    	  //.eg if number is 123 then at start i will be at 3 and first cut will give 12 3 as i=2 and i-1=1 and secondcut will be 1 23 as i-2=0
 	    	  int firstCut=Integer.valueOf(s.substring(i-1,i));
 	    	  int secondCut=Integer.valueOf(s.substring(i-2,i));
 	    	  
@@ -1866,7 +1904,7 @@ public class Problems {
 //	 			Output: -1
 //	 			Explanation: The final subarray needs to be non-empty. You can't choose [-1] and delete -1 from it, then get an empty
 //	 			subarray to make the sum equals to 0.
-	 	//https://www.cnblogs.com/lz87/p/11525139.html
+	 	//https://www.geeksforgeeks.org/maximum-sum-subarray-removing-one-element/
 	 	
 	 	public int maximumSum(int[] arr) {
 	 		int n = arr.length, res = arr[0];
@@ -2631,6 +2669,123 @@ public class Problems {
 	 					Math.max(maxProfitUtil(prices, state, dp, start+1), maxProfitUtil(prices, 1, dp, start+1)-prices[start]):
 	 					Math.max(maxProfitUtil(prices, state, dp, start+1), maxProfitUtil(prices, 2, dp, start+1)+prices[start]);
 	 		}
+	 		
+//	 		Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more 
+//	 				dictionary words.
+//
+//	 				Note that the same word in the dictionary may be reused multiple times in the segmentation.
+//
+//	 				 
+//
+//	 				Example 1:
+//
+//	 				Input: s = "leetcode", wordDict = ["leet","code"]
+//	 				Output: true
+//	 				Explanation: Return true because "leetcode" can be segmented as "leet code".
+//	 				Example 2:
+//
+//	 				Input: s = "applepenapple", wordDict = ["apple","pen"]
+//	 				Output: true
+//	 				Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+//	 				Note that you are allowed to reuse a dictionary word.
+//	 				Example 3:
+//
+//	 				Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+//	 				Output: false
+//	 				 
+//
+//	 				Constraints:
+//
+//	 				1 <= s.length <= 300
+//	 				1 <= wordDict.length <= 1000
+//	 				1 <= wordDict[i].length <= 20
+//	 				s and wordDict[i] consist of only lowercase English letters.
+//	 				All the strings of wordDict are unique.
+	 		public boolean wordBreak(String s, List<String> wordDict) {
+	 	        if(s.length()==0||wordDict.isEmpty())
+	 	        	return false;
+	 	        HashSet<String> dict=new HashSet<String>(wordDict);
+	 	        return wordBreakUtil(s, 0, dict, new Boolean[s.length()]);
+	 	        
+	 	    }
+	 		
+	 		boolean wordBreakUtil(String s,int i, HashSet<String> dict,Boolean[] word) {
+	 			if(i==s.length())
+	 				return true;
+	 			if(word[i]!=null)
+	 				return word[i];
+	 			for(int j=i+1;j<=s.length();j++) {
+	 				String tmp=s.substring(i, j);
+	 				if(dict.contains(tmp) && wordBreakUtil(s, j, dict, word)) {
+	 					word[i]=true;
+	 					return true;
+	 				}
+	 			}
+	 			word[i]=false;
+	 			return false;
+	 		}
+	 		
+//	 		A city's skyline is the outer contour of the silhouette formed by all the buildings in that city when viewed from a distance. Given the locations and heights of all the buildings, return the skyline formed by these buildings collectively.
+//
+//	 		The geometric information of each building is given in the array buildings where buildings[i] = [lefti, righti, heighti]:
+//
+//	 		lefti is the x coordinate of the left edge of the ith building.
+//	 		righti is the x coordinate of the right edge of the ith building.
+//	 		heighti is the height of the ith building.
+//	 		You may assume all buildings are perfect rectangles grounded on an absolutely flat surface at height 0.
+//
+//	 		The skyline should be represented as a list of "key points" sorted by their x-coordinate in the form [[x1,y1],[x2,y2],...]. Each key point is the left endpoint of some horizontal segment in the skyline except the last point in the list, which always has a y-coordinate 0 and is used to mark the skyline's termination where the rightmost building ends. Any ground between the leftmost and rightmost buildings should be part of the skyline's contour.
+//
+//	 		Note: There must be no consecutive horizontal lines of equal height in the output skyline. For instance, [...,[2 3],[4 5],[7 5],[11 5],[12 7],...] is not acceptable; the three lines of height 5 should be merged into one in the final output as such: [...,[2 3],[4 5],[12 7],...]
+//
+//	 		 
+//
+//	 		Example 1:
+//
+//
+//	 		Input: buildings = [[2,9,10],[3,7,15],[5,12,12],[15,20,10],[19,24,8]]
+//	 		Output: [[2,10],[3,15],[7,12],[12,0],[15,10],[20,8],[24,0]]
+//	 		Explanation:
+//	 		Figure A shows the buildings of the input.
+//	 		Figure B shows the skyline formed by those buildings. The red points in figure B represent the key points in the output list.
+//	 		Example 2:
+//
+//	 		Input: buildings = [[0,2,3],[2,5,3]]
+//	 		Output: [[0,3],[5,0]]
+	 		//youtube tech granth
+	 		
+	 		public List<List<Integer>> getSkyline(int[][] buildings) {
+	 			List<List<Integer>> result =new ArrayList<List<Integer>>();
+	 			List<int[]> heights=new ArrayList<int[]>();
+	 			for(int [] building:buildings) {
+	 				heights.add(new int[] {building[0],-building[2]});
+	 				heights.add(new int[] {building[1],building[2]});
+	 			}
+	 			Collections.sort(heights, (a,b)->{
+	 				if(a[0]!=b[0])
+	 					return a[0]-b[0];
+	 				else
+	 					return a[1]-b[1];
+	 			});
+	 			PriorityQueue<Integer> pq=new PriorityQueue<Integer>((a,b)->b-a);
+	 			pq.offer(0);
+	 			int prev=0;
+	 			for(int []h:heights) {
+	 				if(h[1]<0)
+	 					pq.offer(h[1]);
+	 				else
+	 					pq.remove(h[1]);
+	 				int curr=pq.peek();
+	 				if(prev!=curr) {
+	 					List<Integer>temp=new ArrayList<Integer>();
+	 					temp.add(h[0]);
+	 					temp.add(curr);
+	 					result.add(new ArrayList<Integer>(temp));
+	 					prev=curr;
+	 				}
+	 			}
+	 			return result;
+	 	    }
 }
 
 
