@@ -1,4 +1,3 @@
-
 package leetcode;
 
 import java.util.ArrayList;
@@ -332,7 +331,8 @@ public class Problems {
        return new int[] {-1,-1};
     }
 	
-//	Given a list of sorted characters letters containing only lowercase letters, and given a target letter target, find the smallest element in the list that is larger than the given target.
+//	Given a list of sorted characters letters containing only lowercase letters, and given a target letter target, find the smallest element
+	//in the list that is larger than the given target.
 //
 //	Letters also wrap around. For example, if the target is target = 'z' and letters = ['a', 'b'], the answer is 'a'.
 //
@@ -914,7 +914,8 @@ public class Problems {
 	        return -1;
 	    }
 	    
-//	    You are also given some queries. Each query consists of two integers i and c, return the shortest distance between the given index i and the target color c. If there is no solution return -1.
+//	    You are also given some queries. Each query consists of two integers i and c, return the shortest distance between the given index i and the
+//	    target color c. If there is no solution return -1.
 //
 //	    		Example 1:
 //
@@ -999,7 +1000,7 @@ public class Problems {
 	    }
 	    
 	    boolean isValidNum(int num,int[] piles, int H) {
-	    	int hour=0,carryOver=0;
+	    	int hour=0;
 	    	for(int banana:piles) {
 	    		if(banana%num==0) hour+=banana/num;
 	    		else hour+=banana/num+1;
@@ -1213,7 +1214,8 @@ public class Problems {
 	    	return result>=m;
 	    }
 //	    Given an array of integers nums and an integer threshold, we will choose a positive integer divisor and divide 
-//all the array by it and sum the result of the division. Find the smallest divisor such that the result mentioned above is less than or equal to threshold.
+//all the array by it and sum the result of the division. Find the smallest divisor such that the result mentioned above is less than or equal to 
+	    //threshold.
 //
 //	    Each result of division is rounded to the nearest integer greater than or equal to that element. (For example: 7/3 = 3 and 10/2 = 5).
 //
