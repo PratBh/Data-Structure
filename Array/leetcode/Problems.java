@@ -421,5 +421,158 @@ public class Problems {
 		return temp;
 	}
 	
+	//	Given an array of non-negative integers nums, you are initially positioned at the first index of the array.
+//
+//	Each element in the array represents your maximum jump length at that position.
+//
+//	Determine if you are able to reach the last index.
+//
+//	 
+//
+//	Example 1:
+//
+//	Input: nums = [2,3,1,1,4]
+//	Output: true
+//	Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+//	Example 2:
+//
+//	Input: nums = [3,2,1,0,4]
+//	Output: false
+//	Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
+	//https://leetcode.com/problems/jump-game/discuss/1277838/All-Solutions-Java-or-4-Solutions
+	public boolean canJump(int[] nums) {
+		int n=nums.length;
+	     boolean  dp[]=new boolean[n];
+	     dp[0]=true;
+	     for(int i=0;i<n;i++) {
+	    	 if(!dp[i])
+	    		 continue;
+	    	 for(int j=1;i+j<n && j<=nums[i];j++)
+	    		 dp[i+j]=true;
+	     }
+	     return dp[n-1];
+    } 
 	
+//	Given an array of non-negative integers nums, you are initially positioned at the first index of the array.
+//
+//	Each element in the array represents your maximum jump length at that position.
+//
+//	Your goal is to reach the last index in the minimum number of jumps.
+//
+//	You can assume that you can always reach the last index.
+//
+//	 
+//
+//	Example 1:
+//
+//	Input: nums = [2,3,1,1,4]
+//	Output: 2
+//	Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+//	Example 2:
+//
+//	Input: nums = [2,3,0,1,4]
+//	Output: 2
+	//https://leetcode.com/problems/jump-game-ii/discuss/1278393/Java-4-Solutions
+	 public int jump(int[] nums) {
+		 int n=nums.length;
+	     int  dp[]=new int[n];
+		 Arrays.fill(dp, Integer.MAX_VALUE);
+		 dp[0]=0;
+		 	for(int i=0;i<n;i++) {
+		 		if(dp[i]==Integer.MAX_VALUE)
+		 			continue;
+		 		for(int j=1;j+i<n&& j<=nums[i];j++) {
+		 			dp[i+j]=Math.min(dp[i+j], dp[i]+1);
+		 		}
+		 	}
+		 	return dp[n-1];
+	    }
+	 
+//	 Given an array arr[] of integers, find out the maximum difference between any two elements such that larger element appears after the smaller number. 
+//
+//	 Examples : 
+//
+//	 Input : arr = {2, 3, 10, 6, 4, 8, 1}
+//	 Output : 8
+//	 Explanation : The maximum difference is between 10 and 2.
+//
+//	 Input : arr = {7, 9, 5, 6, 3, 2}
+//	 Output : 2
+//	 Explanation : The maximum difference is between 9 and 7.
+//	 https://www.geeksforgeeks.org/maximum-difference-between-two-elements/
+	 
+	 int maxDiff(int [] arr) {
+		 int n=arr.length;
+		 if(n<2)
+			 return 0;
+		 int max_diff=arr[1]-arr[0];
+		 int min_element=arr[0];
+		 for(int i=1;i<n;i++) {
+			 if(max_diff<arr[i]-min_element)
+				 max_diff=arr[i]-min_element;
+			 if(arr[i]<min_element)
+				 min_element=arr[i];
+		 }
+		 return max_diff;
+	 }
+	 
+//	 The cost of a stock on each day is given in an array, find the max profit that you can make by buying and selling in those days. 
+//	 For example, if the given array is {100, 180, 260, 310, 40, 535, 695}, the maximum profit can earned by buying on day 0, selling on day 3.
+//	 Again buy on day 4 and sell on day 6. If the given array of prices is sorted in decreasing order, then profit cannot be earned at all.
+	 
+	 int maxProfit(int []arr) {
+		 int min_price=arr[0],max_profit=0,local_profit=0;
+		 for(int i=1;i<arr.length;i++) {
+			 if(min_price>arr[i]) {
+				 min_price=arr[i];
+				 max_profit+=local_profit;
+				 local_profit=0;
+			 }
+			 if(local_profit<arr[i]-min_price)
+				 local_profit=arr[i]-min_price;
+		 }
+		 System.out.println(max_profit+local_profit);
+		 return max_profit+local_profit;
+	 }
+	 
+//	 Given an array of n distinct elements, find the minimum number of swaps required to sort the array.
+//
+//	 Examples: 
+//
+//	 Input: {4, 3, 2, 1}
+//	 Output: 2
+//	 Explanation: Swap index 0 with 3 and 1 with 2 to 
+//	               form the sorted array {1, 2, 3, 4}.
+//
+//	 Input: {1, 5, 4, 3, 2}
+//	 Output: 2
+	 
+//	 https://www.geeksforgeeks.org/minimum-number-swaps-required-sort-array/
+	 
+	 int minSwaps(int[] arr) {
+		 HashMap<Integer, Integer> map = new HashMap<>();
+		 int n=arr.length;
+		 for(int i=0;i<n;i++) {
+			 map.put(arr[i], i);
+		 }
+		 boolean visited[]=new boolean[n];
+		 Arrays.fill(visited, false);
+		 int ans=0;
+		 Arrays.sort(arr);
+		 for(int i=0;i<n;i++) {
+			if(visited[i]==true || map.get(arr[i])==i)
+				continue;
+			int j=i,cycle_len=0;
+			while(!visited[j]) {
+				visited[j]=true;
+				j=map.get(arr[j]);
+				cycle_len++;
+			}
+			if(cycle_len>0)
+				ans+=cycle_len;
+				
+		 }
+		 return ans;
+	 }
+
 }
