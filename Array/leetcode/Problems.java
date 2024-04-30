@@ -442,15 +442,16 @@ public class Problems {
 	//https://leetcode.com/problems/jump-game/discuss/1277838/All-Solutions-Java-or-4-Solutions
 	public boolean canJump(int[] nums) {
 		int n=nums.length;
-	     boolean  dp[]=new boolean[n];
-	     dp[0]=true;
-	     for(int i=0;i<n;i++) {
-	    	 if(!dp[i])
-	    		 continue;
-	    	 for(int j=1;i+j<n && j<=nums[i];j++)
-	    		 dp[i+j]=true;
-	     }
-	     return dp[n-1];
+		boolean[] dp = new boolean[n];
+		dp[n-1]=true;
+		for(int i=n-2;i>=0;i--){
+			boolean canReach = false;
+			for(int k=1;k<=nums[i] && i+k < n;k++){
+				canReach = canReach||dp[i+k];
+			}
+			dp[i]=canReach;
+		}
+		return dp[0];
     } 
 	
 //	Given an array of non-negative integers nums, you are initially positioned at the first index of the array.
