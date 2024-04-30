@@ -55,7 +55,7 @@ public class Problems {
 		else {
 			int ans=Integer.MAX_VALUE;
 			int left,right;
-			for(int k=i;i<j;k++) {
+			for(int k=i;k<j;k++) {
 				int temp;
 				if(t[i][k]!=-1) {
 					 left=t[i][k];
@@ -245,7 +245,7 @@ public class Problems {
 //    Number of trials when number of eggs is 2 and number of floors is 4: 3
 	
 	int eggDrop(int floors,int eggs) {
-		int[][]t=new int[eggs][floors];
+		int[][]t=new int[eggs+1][floors+1];
 		for(int i=0;i<t.length;i++)
 			Arrays.fill(t[i], -1);
 		return eggDropUtil(floors, eggs, t);
