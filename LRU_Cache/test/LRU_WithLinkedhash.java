@@ -15,6 +15,7 @@ public class LRU_WithLinkedhash {
 		if(!cache.contains(page))
 			return false;
 		cache.remove(page);
+		cache.add(page);
 		return true;
 	}
 	
