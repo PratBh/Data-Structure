@@ -71,7 +71,7 @@ public class HeapPractice {
 	
 	int[] kClosest(int k,int[] arr,int x) {
 		int[] result=new int[k];
-		PriorityQueue<int[]> pMax=new PriorityQueue<int[]>(new arr_comparator());//max heap
+		PriorityQueue<int[]> pMax=new PriorityQueue<>((a, b) -> b[1] - a[1]);//max heap
 		for(int i=0;i<arr.length;i++) {
 			int[] temp= {arr[i],Math.abs(arr[i]-x)};
 			pMax.add(temp);
@@ -124,7 +124,7 @@ public class HeapPractice {
 				hm.put(arr[i], 1);
 		}
 		
-		PriorityQueue<int[]> pMax=new PriorityQueue<int[]>(new arr_comparator());//max heap
+		PriorityQueue<int[]> pMax=new PriorityQueue<>((a, b) -> b[1] - a[1]);//max heap
 		for(Map.Entry<Integer, Integer> entry:hm.entrySet()) {
 			int[] temp= {entry.getKey(),entry.getValue()};
 			pMax.add(temp);
@@ -159,7 +159,7 @@ public class HeapPractice {
 	}
 	
 	int[][] kClosest(int[][] points,int k) {
-		PriorityQueue<int[]> pMax=new PriorityQueue<int[]>(new arr2_comparator());
+		PriorityQueue<int[]> pMax=new PriorityQueue<>((a, b) -> a[0] - b[0]);
 		for(int i=0;i<points.length;i++) {
 			int [] dist= {(points[i][0]*points[i][0])+points[i][1]*points[i][1],points[i][0],points[i][1]};
 			pMax.add(dist);
@@ -190,7 +190,7 @@ public class HeapPractice {
 			int b=pMin.poll();
 			int tempSum=a+b;
 			pMin.add(tempSum);
-			sum=sum+tempSum;
+			sum+=tempSum;
 			
 		}
 		
