@@ -530,9 +530,9 @@ public class Problems {
 				return res;
 			}
 			if(mat[i][j]>element)
-				j--;
+				i--;
 			else
-				i++;
+				j++;
 		}
 		return res;
 	}
