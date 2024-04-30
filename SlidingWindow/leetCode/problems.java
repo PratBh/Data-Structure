@@ -109,9 +109,6 @@ public class Problems {
 	    		ones++;
 	    	else
 	    		zeros++;
-//	    	if(zeros<K)
-//	    		j++;
-//	    	else 
 	    	if(zeros<=K) {
 	    		len=Math.max(len, zeros+ones);
 	    		j++;
@@ -309,25 +306,26 @@ public class Problems {
 //	 The moment the condition is not satisfied (i.e., count of most repeatable character + no. of allowed replacements > size of the window), then we need to slide the window (not shrink) to the right and decrement the frequency of the character that is moved out of the window.
 //	 If the next character coming in is the most repeating character, then the window grows or else it simply slides again.
 	 public int characterReplacement(String s, int k) {
-		 if(s.length()==0)
-			 return 0;
-		 Map<Character,Integer> mp=new HashMap<Character,Integer>();
-		 int i=0,j=0,len=Integer.MIN_VALUE,mostFreqCharCount=0;
-		 for(j=0;j<s.length();j++) {
-			 if(mp.containsKey(s.charAt(j)))
-					mp.put(s.charAt(j), mp.get(s.charAt(j))+1);
-				else
-					mp.put(s.charAt(j), 1);
-			 	mostFreqCharCount=Math.max(mostFreqCharCount, mp.get(s.charAt(j)));
-				if(j-i+1>mostFreqCharCount+k) {
-					mp.put(s.charAt(i), mp.get(s.charAt(i))-1);
-					if(mp.get(s.charAt(i))==0)
-						mp.remove(s.charAt(i));
-					i++;
-				}
-				len=Math.max(len, j-i+1);
-		 }
-		 return len;
+		if(s.length()==0)
+		return 0;
+	Map<Character,Integer> mp=new HashMap<Character,Integer>();
+	int i=0,j=0,len=Integer.MIN_VALUE,mostFreqCharCount=0;
+	while(j<s.length()) {
+		mp.put(s.charAt(j),mp.getOrDefault(s.charAt(j),0)+1);
+		mostFreqCharCount=Math.max(mostFreqCharCount, mp.get(s.charAt(j)));
+		if(j-i+1<=mostFreqCharCount+k){
+			len=Math.max(len, j-i+1);
+			j++;
+		}
+		else if(j-i+1>mostFreqCharCount+k) {
+			mp.put(s.charAt(i), mp.get(s.charAt(i))-1);
+			if(mp.get(s.charAt(i))==0)
+				mp.remove(s.charAt(i));
+			i++;j++;
+		}
+
+	}
+	return len;
 	 }
 	 
 //	 Given an integer array arr, return the length of a maximum size turbulent subarray of arr.
@@ -434,12 +432,9 @@ public class Problems {
 	 public boolean checkInclusion(String s1, String s2) {
 	     int k=s1.length(),n=s2.length(),i=0,j=0;
 	     Map<Character,Integer> mp=new HashMap<Character, Integer>();
-	     for(int l=0;l<k;l++) {
-	    	 if(mp.containsKey(s1.charAt(l)))
-	    		 mp.put(s1.charAt(l), mp.get(s1.charAt(l))+1);
-	    	 else
-	    		 mp.put(s1.charAt(l),1);
-	     }
+	     for(char c:s1.toCharArray()){
+			 mp.put(c,mp.getOrDefault(c,0)+1);
+		 }
 	     int count =mp.size();
 	     while(j<n) {
 	    	 if(mp.containsKey(s2.charAt(j))) {
@@ -575,19 +570,24 @@ public class Problems {
 //			 Input: s = "ababbc", k = 2
 //			 Output: 5
 //			 Explanation: The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
-	 public int longestSubstring(String s, int k) {
-	      Map<Character,Integer> mp=new HashMap<Character, Integer>();
-	      int n=s.length(),i=0,j=0,len=0,count=0;
-	      while(j<n) {
-	    	  if(mp.containsKey(s.charAt(j)))
-	    		  mp.put(s.charAt(j), mp.get(s.charAt(j))+1);
-	    	  else
-	    		  mp.put(s.charAt(j),1); 
-	    	  if(mp.get(s.charAt(j))>=k)
-	    		  count++;
-	      }
-	      return count;
-	 }
+	 //https://www.youtube.com/watch?v=YSQVDVRQyA4
+	public int longestSubstring(String s, int k) {
+		Map<Character,Integer> mp=new HashMap<Character, Integer>();
+	for (char c:s.toCharArray())
+		mp.put(c,mp.getOrDefault(c,0)+1);
+	int start = 0;boolean valid = true; int maxLength = Integer.MIN_VALUE;
+	for(int end=0;end<s.length();end++){
+		if(mp.get(s.charAt(end))<k){
+			maxLength = Math.max(maxLength,longestSubstring(s.substring(start,end),k));
+			start = end+1;
+			valid = false;
+		}
+	}
+	if(valid)
+		return s.length();
+	else
+		return Math.max(maxLength,longestSubstring(s.substring(start),k));
+}
 	 
 //	 Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. 
 //	 If there isn't one, return 0 instead.
@@ -642,6 +642,57 @@ public class Problems {
 	  }
 	  return count;
 	 }
+	//	You are given a string s and an array of strings words. All the strings of words are of the same length.
+//
+//	A concatenated substring in s is a substring that contains all the strings of any permutation of words concatenated.
+//
+//	For example, if words = ["ab","cd","ef"], then "abcdef", "abefcd", "cdabef", "cdefab", "efabcd", and "efcdab" are all concatenated strings. "acdbef" is not a concatenated substring because it is not the concatenation of any permutation of words.
+//	Return the starting indices of all the concatenated substrings in s. You can return the answer in any order.
+//
+//
+//
+//			Example 1:
+//
+//	Input: s = "barfoothefoobarman", words = ["foo","bar"]
+//	Output: [0,9]
+//	Explanation: Since words.length == 2 and words[i].length == 3, the concatenated substring has to be of length 6.
+//	The substring starting at 0 is "barfoo". It is the concatenation of ["bar","foo"] which is a permutation of words.
+//	The substring starting at 9 is "foobar". It is the concatenation of ["foo","bar"] which is a permutation of words.
+//	The output order does not matter. Returning [9,0] is fine too.
+
+	public List<Integer> findSubstring(String s, String[] words) {
+		List<String> wordList = Arrays.asList(words);
+		int size_word=wordList.get(0).length();
+		int word_count=wordList.size();
+		int size_l=size_word * word_count;
+		int n=s.length();
+		List<Integer> res = new ArrayList<Integer>();
+		if(size_l>n)
+			return res;
+
+		HashMap<String, Integer> hm = new HashMap<String, Integer>();
+		for(String word : wordList) {
+			hm.put(word, hm.getOrDefault(word, 0)+1);
+		}
+
+		for (int i=0;i<n-size_l;i++) {
+			HashMap<String, Integer> temp_hm=(HashMap<String, Integer>) hm.clone();
+			int j=i,count=word_count;
+			while(j<i+size_l) {
+				String word = s.substring(j, j+size_word);
+				if(!hm.containsKey(word)||temp_hm.get(word)==0) {
+					break;
+				}else {
+					temp_hm.put(word, temp_hm.get(word)-1);
+					count--;
+				}
+				j=j+size_word;
+			}
+			if(count==0)
+				res.add(i);
+		}
+		return res;
+	}
 	 
 }
 
