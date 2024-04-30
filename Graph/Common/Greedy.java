@@ -122,7 +122,7 @@ public class Greedy {
 	       int profit=0;
 	       for(int i=1;i<n;i++) {
 	    	   if(prices[i]>prices[i-1])
-	    		   profit=profit+(prices[i]-prices[i-1]);
+	    		   profit+=(prices[i]-prices[i-1]);
 	       }
 	       return profit;
 	 }  
@@ -223,7 +223,7 @@ public class Greedy {
 //	 Input: [1,0,2]
 //	 Output: 5
 //	 Explanation: You can allocate to the first, second and third child with 2, 1, 2 candies respectively.
-	 //https://www.youtube.com/watch?v=z4JbOTZqAbc
+	 //https://leetcode.com/problems/candy/solutions/4001238/java-easy-solution-with-proper-explanation-beats-100/?envType=study-plan-v2&envId=top-interview-150
 	 public int candy(int[] ratings) {
 		 int n=ratings.length;
 	      int[]ltor=new int[n];
