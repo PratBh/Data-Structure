@@ -308,19 +308,11 @@ public class Problems {
 		for(int i=0;i<=n;i++) {
 			for(int j=0;j<=sum;j++) {
 				if(i==0)
-					t[i][j]=(int) Double.POSITIVE_INFINITY;
+					t[i][j]=(int) Integer.MAX_VALUE-1;
 				if(j==0)
 					t[i][j]=0;
 			}
 		}
-		
-//		//for 2nd row 
-//		for(int j=1;j<=sum;j++) {
-//			if(j%coin[0]==0)
-//				t[1][j]=j/coin[0];
-//			else
-//				t[1][j]=Integer.MAX_VALUE-1;
-//		}
 		
 		for(int i=1;i<=n;i++) {
 			for(int j=1;j<=sum;j++) {
@@ -330,7 +322,7 @@ public class Problems {
 					t[i][j]=t[i-1][j];
 			}
 		}
-		return t[n][sum];
+		return t[n][sum]==Integer.MAX_VALUE -1 ? -1:t[n][sum];
 		
 	}
 	
