@@ -122,7 +122,7 @@ public class Problems {
 //	Input: s = "axc", t = "ahbgdc"
 //	Output: false
 	 public boolean isSubsequence(String s, String t) {
-	        int [][] dp=new int [s.length()][t.length()];
+	        int [][] dp=new int [s.length()+1][t.length()+1];
 	        for(int i=0;i<s.length()+1;i++) {
 	        	for(int j=0;j<t.length()+1;j++) {
 	        		if(i==0||j==0)
@@ -1057,16 +1057,16 @@ public class Problems {
 	        return ans;
 	 }
 	 
-	 int minimumTotalUtil(ArrayList<ArrayList<Integer>> triangle,int [][]t,int i,int j) {
-		 if(i==triangle.size()-1)
-			 return triangle.get(i).get(j);
-		 if(t[i][j]!=0)
-			 return t[i][j];
-		 int point=triangle.get(i).get(j);
-		 int left=minimumTotalUtil(triangle, t, i+1, j);
-		 int right=minimumTotalUtil(triangle, t, i+1, j+1);
-		 t[i][j]=point+Math.min(left, right);
-		 return t[i][j];
+	 int minimumTotalUtil(ArrayList<ArrayList<Integer>> triangle,int [][]t,int row,int col) {
+		 if(row==triangle.size()-1)
+			 return triangle.get(row).get(col);
+		 if(t[row][col]!=0)
+			 return t[row][col];
+		 int point=triangle.get(row).get(col);
+		 int left=minimumTotalUtil(triangle, t, row+1, col);
+		 int right=minimumTotalUtil(triangle, t, row+1, col+1);
+		 t[row][col]=point+Math.min(left, right);
+		 return t[row][col];
 	 }
 	 
 //	 You are given an integer array nums. You can choose exactly one index (0-indexed) and remove the element. 
